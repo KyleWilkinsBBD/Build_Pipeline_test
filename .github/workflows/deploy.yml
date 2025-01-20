@@ -20,6 +20,10 @@ jobs:
       with:
         name: release-artifact
 
+    - name: List Downloaded Files
+      run: ls -lh
+      
+
     - name: Install AWS CLI
       run: |
         sudo apt-get update
