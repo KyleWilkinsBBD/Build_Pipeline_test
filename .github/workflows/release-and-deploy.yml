@@ -54,6 +54,9 @@ jobs:
       working-directory: ./app
       run: zip -r lambda-deploy.zip ./*
 
+    - name: Debug Region
+      run: echo "AWS_REGION=${{ secrets.AWS_REGION }}"
+
     # Deploy to AWS Lambda
     - name: Deploy to AWS Lambda
       env:
