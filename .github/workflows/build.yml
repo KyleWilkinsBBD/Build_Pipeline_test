@@ -27,6 +27,3 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # Step 5: Build the application (if applicable)
-      - name: Build application
-        run: node server.js
