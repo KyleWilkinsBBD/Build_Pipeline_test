@@ -1,25 +1,57 @@
-name: Deploy Application
+name: Deploy
 
 on:
-  push:
-    branches:
-      - main  # Trigger deployment on push to the main branch
-  workflow_dispatch:  # Allow manual deployment triggers
+  workflow_run:
+    workflows:
+      - Release
+    types:
+      - completed
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+    - name: Checkout Code
+      uses: actions/checkout@v4
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
+    - name: Download Release Artifact
+      uses: actions/download-artifact@v3
       with:
-        node-version: 16
+        name: release-artifact
 
-    - name: Install dependencies
-      run: npm install
+    - name: Install AWS CLI
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y awscli
 
-    # Add deployment steps based on the platform
+    - name: Configure AWS CLI
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: ${{ secrets.AWS_REGION }}
+      run: |
+        aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+        aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+        aws configure set region $AWS_REGION
+
+    - name: Unzip Release Artifact
+      run: unzip release.zip -d app/
+
+    - name: Install Dependencies
+      working-directory: ./app
+      run: npm install --only=prod
+
+    - name: Repackage Lambda Deployment Package
+      working-directory: ./app
+      run: zip -r lambda-deploy.zip ./*
+
+    - name: Deploy to AWS Lambda
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: ${{ secrets.AWS_REGION }}
+      run: |
+        aws lambda update-function-code \
+          --function-name KyleWilkins_NodeApp \
+          --zip-file fileb://app/lambda-deploy.zip
