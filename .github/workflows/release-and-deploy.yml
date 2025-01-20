@@ -30,16 +30,16 @@ jobs:
         sudo ./aws/install --update
 
 
-    # # Configure AWS CLI
-    # - name: Configure AWS CLI
-    #   env:
-    #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    #     AWS_REGION: ${{ secrets.AWS_REGION }}
-    #   run: |
-    #     aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
-    #     aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
-    #     aws configure set region $AWS_REGION
+    # Configure AWS CLI
+    - name: Configure AWS CLI
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: ${{ secrets.AWS_REGION }}
+      run: |
+        aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+        aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+        aws configure set region $AWS_REGION
 
     # Extract and install dependencies
     - name: Unzip Release Package
