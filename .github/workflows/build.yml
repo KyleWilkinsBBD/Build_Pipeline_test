@@ -29,4 +29,4 @@ jobs:
 
       # Step 5: Build the application (if applicable)
       - name: Build application
-        run: npm run build
+        run: node server.js
