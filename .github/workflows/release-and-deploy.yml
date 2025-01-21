@@ -67,5 +67,5 @@ jobs:
       run: |
             aws lambda update-function-code \
             --function-name KyleWilkins_NodeApp \
-            --region $AWS_REGION \
+            --region ${{ secrets.AWS_REGION }} \
             --zip-file fileb://app/lambda-deploy.zip
