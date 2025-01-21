@@ -4,6 +4,6 @@ exports.handler = async (event) => {
         headers: {
             "Content-Type": "text/html"
         },
-        body: "<html><body><h1>Hello, World!</h1></body></html>"
+        body: "<html><body><img src='./buzz.jpg'/></body></html>"
     };
 };
